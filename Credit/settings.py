@@ -12,6 +12,14 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import secrets
 import os
 import dj_database_url
+from pathlib import Path
+from dotenv import load_dotenv
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
+
+# …rest of your settings…
+
 # ...
 
 SECRET_KEY = secrets.token_hex(24)
@@ -83,11 +91,13 @@ WSGI_APPLICATION = 'Credit.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
+        # If DATABASE_URL isn’t set, use local SQLite
+        default=f"sqlite:///{os.path.join(BASE_DIR, 'db.sqlite3')}",
         conn_max_age=600,
-        ssl_require=True
+        ssl_require=False
     )
 }
 
